@@ -1,0 +1,19 @@
+domain: jurycu.io
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: probix
+repo: github.com/jurycu/probix
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: jurycu.io
+  group: ferulax
+  kind: Probix
+  path: github.com/jurycu/probix/api/v1alpha1
+  version: v1alpha1
+version: "3"

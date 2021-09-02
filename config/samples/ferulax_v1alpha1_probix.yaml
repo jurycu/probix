@@ -1,0 +1,7 @@
+apiVersion: ferulax.jurycu.io/v1alpha1
+kind: Probix
+metadata:
+  name: probix-sample
+spec:
+  # Add fields here
+  foo: bar

@@ -1,0 +1,24 @@
+# permissions for end users to edit probixes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: probix-editor-role
+rules:
+- apiGroups:
+  - ferulax.jurycu.io
+  resources:
+  - probixes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ferulax.jurycu.io
+  resources:
+  - probixes/status
+  verbs:
+  - get

@@ -1,0 +1,20 @@
+# permissions for end users to view probixes.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: probix-viewer-role
+rules:
+- apiGroups:
+  - ferulax.jurycu.io
+  resources:
+  - probixes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ferulax.jurycu.io
+  resources:
+  - probixes/status
+  verbs:
+  - get
