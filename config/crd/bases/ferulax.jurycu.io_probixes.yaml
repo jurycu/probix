@@ -1,0 +1,82 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: probixes.ferulax.jurycu.io
+spec:
+  group: ferulax.jurycu.io
+  names:
+    kind: Probix
+    listKind: ProbixList
+    plural: probixes
+    singular: probix
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Probix is the Schema for the probixes API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ProbixSpec defines the desired state of Probix
+            properties:
+              interval:
+                type: string
+              scrapeTimeout:
+                type: string
+              targets:
+                items:
+                  properties:
+                    body:
+                      description: 当请求参数为POST时，可以传入body参数，GET请求只支持path传参
+                      type: string
+                    method:
+                      description: 请求方法,默认为GET
+                      type: string
+                    metricsHelp:
+                      type: string
+                    metricsName:
+                      description: 完整的target路径
+                      type: string
+                    target:
+                      type: string
+                  type: object
+                type: array
+            type: object
+          status:
+            description: ProbixStatus defines the observed state of Probix
+            properties:
+              message:
+                description: 备注信息
+                type: string
+              status:
+                description: 数据拉取状态
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

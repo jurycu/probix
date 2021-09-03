@@ -23,7 +23,6 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-
 type Result string
 
 const (
@@ -63,6 +62,7 @@ type ProbixStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
+
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
