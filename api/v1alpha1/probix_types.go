@@ -23,21 +23,46 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
+
+type Result string
+
+const (
+	SUCCESS Result = "SUCCESS"
+	PENDING Result = "PENDING"
+	FAILED  Result = "FAILED"
+)
+
 // ProbixSpec defines the desired state of Probix
 type ProbixSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	//TODO add relabels and labels
+	// The job name assigned to scraped metrics by default.
 
-	// Foo is an example field of Probix. Edit probix_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	Targets       []ProbixTarget `json:"targets,omitempty"`
+	Interval      string         `json:"interval,omitempty"`
+	ScrapeTimeout string         `json:"scrapeTimeout,omitempty"`
+}
+
+type ProbixTarget struct {
+	//完整的target路径
+	MetricsName string `json:"metricsName,omitempty"`
+	MetricsHelp string `json:"metricsHelp,omitempty"`
+
+	Target string `json:"target,omitempty"`
+	//请求方法,默认为GET
+	Method string `json:"method,omitempty"`
+	//当请求参数为POST时，可以传入body参数，GET请求只支持path传参
+	Body string `json:"body,omitempty"`
 }
 
 // ProbixStatus defines the observed state of Probix
 type ProbixStatus struct {
+	//数据拉取状态
+	Status Result `json:"status,omitempty"`
+	//备注信息
+	Message string `json:"message,omitempty"`
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 }
-
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
