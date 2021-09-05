@@ -19,7 +19,10 @@ package main
 import (
 	"flag"
 	"os"
+	"os/signal"
+	"syscall"
 
+	v1prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -33,6 +36,7 @@ import (
 
 	ferulaxv1alpha1 "github.com/jurycu/probix/api/v1alpha1"
 	"github.com/jurycu/probix/controllers"
+	ginHelper "github.com/jurycu/probix/gin"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -43,6 +47,7 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+	utilruntime.Must(v1prometheus.AddToScheme(scheme))
 
 	utilruntime.Must(ferulaxv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
@@ -71,7 +76,7 @@ func main() {
 		Port:                   9443,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
-		LeaderElectionID:       "938c2ffd.jurycu.io",
+		LeaderElectionID:       "6d6e2cf5.aliyun-inc.com",
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
@@ -79,8 +84,9 @@ func main() {
 	}
 
 	if err = (&controllers.ProbixReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:    mgr.GetClient(),
+		Scheme:    mgr.GetScheme(),
+		Finalizer: controllers.ProbixFinalizer{},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Probix")
 		os.Exit(1)
@@ -96,9 +102,33 @@ func main() {
 		os.Exit(1)
 	}
 
-	setupLog.Info("starting manager")
-	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
-		setupLog.Error(err, "problem running manager")
-		os.Exit(1)
+	srvc := make(chan struct{})
+	term := make(chan os.Signal, 1)
+	signal.Notify(term, os.Interrupt, syscall.SIGTERM)
+
+	//启动gin服务
+	go func() {
+		setupLog.Info("starting gin server...")
+		if err := ginHelper.Run(); err != nil {
+			close(srvc)
+		}
+	}()
+	go func() {
+		setupLog.Info("starting manager")
+		if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
+			setupLog.Error(err, "problem running manager")
+			close(srvc)
+		}
+	}()
+
+	for {
+		select {
+		case <-term:
+			setupLog.Info("msg,Received SIGTERM, exiting gracefully...")
+			os.Exit(0)
+		case <-srvc:
+			os.Exit(1)
+		}
 	}
+
 }

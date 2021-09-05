@@ -7,7 +7,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - ferulax.jurycu.io
+  - acmp.aliyun-inc.com
   resources:
   - probixes
   verbs:
@@ -19,16 +19,28 @@ rules:
   - update
   - watch
 - apiGroups:
-  - ferulax.jurycu.io
+  - acmp.aliyun-inc.com
   resources:
   - probixes/finalizers
   verbs:
   - update
 - apiGroups:
-  - ferulax.jurycu.io
+  - acmp.aliyun-inc.com
   resources:
   - probixes/status
   verbs:
   - get
   - patch
   - update
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - podmonitors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
