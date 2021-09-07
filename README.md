@@ -29,7 +29,7 @@ probix是一个云原生通用的黑盒监控解决方案，用户不用关心�
 
 ## 📜 架构
 
-<img src="https://github.com/jurycu/umi-dva-antd-admin/blob/main/probix-arch.png" /> 
+<img src="https://github.com/jurycu/probix/blob/main/probix-arch.png" /> 
 
 ## 🎉 部署
 ````
